@@ -24,4 +24,4 @@ class AudioFFmpegExtractor(Extractor):
 
         # audio_data = np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
 
-        return out
+        return np.frombuffer(out, dtype=np.int16)
