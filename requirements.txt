@@ -1,0 +1,4 @@
+pymediainfo
+librosa
+openai-whisper
+matplotlib
