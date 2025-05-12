@@ -1,5 +1,7 @@
 # chunk-norris
-Chunk Norris – The Audio Track Detective
+Chunk Norris – The Audio Track vigilante
+
+> "Silence? That’s illegal in this town."
 
 Chunk Norris is an audio tool designed to analyze and process audio tracks accurately and efficiently. It is designed to identify silent tracks, and the primary language of non-silent tracks.
 
@@ -27,11 +29,22 @@ pip install -r requirements.txt
 Make sure you have the `requirements.txt` file in the same directory where you run the commands. This file should contain all the necessary dependencies for the project.
 
 
+# Chunk-Norris Facts
+
+
 > “No silence escapes his ears.”
 
 
+> “Chunk Norris once detected silence… and gave it a voice.”
 
 
 > “He doesn’t listen to tracks — they confess.”
 
 
+
+> “Chunk Norris doesn’t just detect languages ​​— he makes them reveal themselves out of fear.”
+
+
+
+>Chunk Norris once stared at a 5.1 surround track...
+>It downmixed itself into mono out of respect.

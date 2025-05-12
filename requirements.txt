@@ -2,3 +2,4 @@ pymediainfo
 librosa
 openai-whisper
 matplotlib
+python-dotenv
