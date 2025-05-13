@@ -1,20 +1,15 @@
-import librosa
 import numpy as np
 from app.detector import Detector
 
-class SilenceLibrosaDetector(Detector):
+class SilenceNumpyDetector(Detector):
 
     def __init__(self, threshold: float = 0.01):
         self.threshold = threshold
 
 
     def split_into_chunks(self, input_data: np.ndarray, chunk_size: int) -> np.ndarray:
-        
         return input_data
     
     def detect(self, input_data: np.ndarray) -> bool:
-        # Calculate the root mean square (RMS) energy of the audio signal
-        rms = librosa.feature.rms(y=input_data)
-
-        # Check if the mean RMS energy is below the threshold
-        return np.mean(rms) < self.threshold
+        amplitude = np.mean(np.abs(input_data))
+        return amplitude < self.threshold

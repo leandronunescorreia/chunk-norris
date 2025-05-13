@@ -1,5 +1,12 @@
 from detector import Detector
 from extractor import Extractor
+from common.numpy_audio import normalize_audio
+import json
+
+from detector.det_factory import create_new_language_detector, create_new_silence_detector
+from extractor.ext_factory import create_new_audio_extractor, create_new_info_extractor
+
+SAMPLING_RATE=16000
 
 class NorrisSetup:
     def __init__(self, model_path=None, silence_threshold=0.5, silence_duration=0.5,
@@ -7,10 +14,11 @@ class NorrisSetup:
         self.model_path = model_path
         self.silence_threshold = silence_threshold
         self.silence_duration = silence_duration
-        self.info_extractor = info_extractor
-        self.audio_extractor = audio_extractor
-        self.lang_detector = lang_detector
-        self.silence_detector = silence_detector
+        
+        self.info_extractor = create_new_info_extractor(info_extractor)
+        self.audio_extractor = create_new_audio_extractor(audio_extractor)
+        self.lang_detector = create_new_language_detector(lang_detector)
+        self.silence_detector = create_new_silence_detector(silence_detector)
 
 
 class ChunkNorris(Detector, Extractor):
@@ -26,6 +34,21 @@ class ChunkNorris(Detector, Extractor):
         
 
     def run(self, input_path:str, output_path:str):
-        # Implement the detection logic here
-        pass
+        media_info = self.info_extractor.extract(input_path)
+        audio_tracks = []
+
+        for track in media_info.tracks:
+            if track.track_type == "Audio":
+                raw_data_np = self.audio_extractor.extract(input_path, track.to_data().get('stream_identifier'), SAMPLING_RATE)
+                norm_flat_buffer = normalize_audio(raw_data_np)
+                audio_tracks.append({
+                        "track": track,
+                        "raw_data": raw_data_np,
+                        "norm_flat_buffer": norm_flat_buffer,
+                        "lang": self.lang_detector.detect(norm_flat_buffer),
+                        "silence": self.silence_detector.detect(norm_flat_buffer, self.silence_threshold, self.silence_duration)
+                    })
+
+        for item in audio_tracks:
+            print(json.dumps(item, indent=4, default=str))
 

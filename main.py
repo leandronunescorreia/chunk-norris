@@ -1,10 +1,8 @@
 import os
 from dotenv import load_dotenv, dotenv_values
 
-from app import chunk_norris
 from app.chunk_norris import NorrisSetup
 import argparse
-
 
 def main(args):
     load_dotenv()
