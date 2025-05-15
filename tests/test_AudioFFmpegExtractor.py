@@ -35,7 +35,7 @@ class TestAudioFFmpegExtractor(unittest.TestCase):
 
     def test_get_command_with_filter_complex_non_mixed(self):
         file_name = "test_audio.mp4"
-        audio_track = [8, 9]
+        audio_track = [7, 8]
         sampling = 16000
         mixed = False
 
@@ -44,7 +44,7 @@ class TestAudioFFmpegExtractor(unittest.TestCase):
             "-nostdin",
             "-threads", "0",
             "-i", file_name,
-            "-filter_complex", "[0:a:8][0:a:9]amerge=inputs=2,pan=mono|c0=0.5*c0+0.5*c1[aout]",
+            "-filter_complex", "[0:a:7][0:a:8]amerge=inputs=2,pan=mono|c0=0.5*c0+0.5*c1[aout]",
             "-map", "[aout]",
             "-f", "s16le",
             "-ac", "1",
