@@ -43,8 +43,6 @@ class ChunkNorris(Detector, Extractor):
                 norm_flat_buffer = normalize_audio(raw_data_np)
                 audio_tracks.append({
                         "track": track,
-                        "raw_data": raw_data_np,
-                        "norm_flat_buffer": norm_flat_buffer,
                         "lang": self.lang_detector.detect(norm_flat_buffer),
                         "silence": self.silence_detector.detect(norm_flat_buffer, self.silence_threshold, self.silence_duration)
                     })
