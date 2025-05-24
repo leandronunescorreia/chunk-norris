@@ -16,6 +16,7 @@ def main(args):
     audio_extractor = args.audio_extractor if args.audio_extractor is not None else config.get("audio_extractor", None)
     lang_detector = args.lang_detector if args.lang_detector is not None else config.get("lang_detector", None)
     silence_detector = args.silence_detector if args.silence_detector is not None else config.get("silence_detector", None)
+    muted_track = args.muted_detector if args.muted_detector is not None else config.get("muted_detector", None)
 
     norris_setup = NorrisSetup(
         model_path=model_path,
@@ -24,7 +25,8 @@ def main(args):
         info_extractor=info_extractor,
         audio_extractor=audio_extractor,
         lang_detector=lang_detector,
-        silence_detector=silence_detector
+        silence_detector=silence_detector,
+        mute_detector=muted_track
     )
 
     chunk_norris = chunk_norris.ChunkNorris(setup=norris_setup)
@@ -41,6 +43,7 @@ if __name__ == "__main__":
     parser.add_argument("--audio-extractor", "-ae", help="Audio extractor module")
     parser.add_argument("--lang-detector", "-ld", help="Language detector module")
     parser.add_argument("--silence-detector", "-sdt", help="Silence detector module")
+    parser.add_argument("--muted-detector", "-mdt", help="Muted Track detector module")
     
     args = parser.parse_args()
 

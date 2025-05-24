@@ -3,14 +3,15 @@ from extractor import Extractor
 from common.numpy_audio import normalize_audio
 import json
 
-from detector.det_factory import create_new_language_detector, create_new_silence_detector
+from detector.det_factory import create_new_language_detector, create_new_silence_detector, create_new_mute_detector
 from extractor.ext_factory import create_new_audio_extractor, create_new_info_extractor
 
 SAMPLING_RATE=16000
 
 class NorrisSetup:
     def __init__(self, model_path=None, silence_threshold=0.5, silence_duration=0.5,
-                 info_extractor=None, audio_extractor=None, lang_detector=None, silence_detector=None):
+                 info_extractor=None, audio_extractor=None, lang_detector=None, 
+                 silence_detector=None, mute_detector=None):
         self.model_path = model_path
         self.silence_threshold = silence_threshold
         self.silence_duration = silence_duration
@@ -19,6 +20,7 @@ class NorrisSetup:
         self.audio_extractor = create_new_audio_extractor(audio_extractor)
         self.lang_detector = create_new_language_detector(lang_detector)
         self.silence_detector = create_new_silence_detector(silence_detector)
+        self.mute_detector = create_new_mute_detector(mute_detector)
 
 
 class ChunkNorris(Detector, Extractor):
@@ -31,6 +33,7 @@ class ChunkNorris(Detector, Extractor):
         self.audio_extractor = setup.audio_extractor
         self.lang_detector = setup.lang_detector
         self.silence_detector = setup.silence_detector
+        self.mute_detector = setup.mute_detector
         
 
     def run(self, input_path:str, output_path:str):
@@ -43,8 +46,10 @@ class ChunkNorris(Detector, Extractor):
                 norm_flat_buffer = normalize_audio(raw_data_np)
                 audio_tracks.append({
                         "track": track,
-                        "lang": self.lang_detector.detect(norm_flat_buffer),
-                        "silence": self.silence_detector.detect(norm_flat_buffer, self.silence_threshold, self.silence_duration)
+                        "channel_layout": track.to_data().get('channel_layout'),
+                        "detected_lang": self.lang_detector.detect(norm_flat_buffer),
+                        "candidate_silence_points": [],
+                        "is_muted_track": self.mute_detector.detect(norm_flat_buffer, self.silence_threshold)
                     })
 
         for item in audio_tracks:

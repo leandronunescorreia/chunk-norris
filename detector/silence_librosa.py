@@ -9,18 +9,6 @@ class SilenceLibrosaDetector(Detector):
 
 
     def split_into_chunks(self, input_data: np.ndarray, sr: int, chunk_size: int = 30) -> list:
-        """
-        Splits the audio into chunks of approximately `chunk_size` seconds, 
-        ensuring cuts are made near silent periods.
-        
-        Args:
-            input_data (np.ndarray): The audio signal.
-            sr (int): The sampling rate of the audio signal.
-            chunk_size (int): The desired maximum chunk size in seconds.
-
-        Returns:
-            list: A list of audio chunks as numpy arrays.
-        """
         max_samples = chunk_size * sr  # Maximum samples per chunk
         silence_threshold = self.threshold  # Silence threshold
         chunks = []

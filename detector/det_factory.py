@@ -1,6 +1,7 @@
 from detector.language_whisper import LanguageWhisperDetector
 from detector.silence_librosa import SilenceLibrosaDetector
 from detector.silence_numpy import SilenceNumpyDetector
+from detector.mute_track import MuteTrackDetector
 
 def create_new_language_detector (detector_type, config=None):
     if detector_type == 'whisper':
@@ -13,5 +14,14 @@ def create_new_silence_detector (detector_type, config=None):
         return SilenceLibrosaDetector(config)
     elif detector_type == 'numpy':
         return SilenceNumpyDetector(config.get('threshold', 0.01))
+    else:
+        raise ValueError(f"Unknown detector type: {detector_type}")
+
+
+def create_new_mute_detector (detector_type, config=None):
+    if detector_type == 'librosa':
+        return None
+    elif detector_type == 'numpy':
+        return MuteTrackDetector(config.get('threshold', 0.01))
     else:
         raise ValueError(f"Unknown detector type: {detector_type}")
