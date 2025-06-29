@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv, dotenv_values
 
 from app.chunk_norris import NorrisSetup
+from common.output_format import *
 import argparse
 
 def main(args):
@@ -17,6 +18,7 @@ def main(args):
     lang_detector = args.lang_detector if args.lang_detector is not None else config.get("lang_detector", None)
     silence_detector = args.silence_detector if args.silence_detector is not None else config.get("silence_detector", None)
     muted_track = args.muted_detector if args.muted_detector is not None else config.get("muted_detector", None)
+    output_format = args.format if args.format is not None else config.get("output_format", "json")
 
     norris_setup = NorrisSetup(
         model_path=model_path,
@@ -30,12 +32,14 @@ def main(args):
     )
 
     chunk_norris = chunk_norris.ChunkNorris(setup=norris_setup)
-    chunk_norris.run(input_path=args.input, output_path=args.output)
+    result = chunk_norris.run(input_path=args.input)
+    process_output(result, output_format, args.output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Chunk Norris CLI")
     parser.add_argument("--input", "-i", required=True, help="Input file path")
     parser.add_argument("--output", "-o", required=True, help="Output file path")
+    parser.add_argument("--format", "-f", required=True, help="Output format (e.g., 'json', 'csv', 'txt')")
     parser.add_argument("--model-path", "-m", help="Path to the model")
     parser.add_argument("--silence-threshold", "-st", type=float, help="Silence threshold value")
     parser.add_argument("--silence-duration", "-sd", type=float, help="Silence duration value")

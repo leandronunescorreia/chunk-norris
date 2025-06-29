@@ -182,3 +182,7 @@ cython_debug/
 *.mp4
 *.mxf
 *.mov
+
+# PyCharm files
+.idea/
+*.iml
