@@ -5,6 +5,8 @@ import numpy as np
 import sys
 from dotenv import load_dotenv, dotenv_values
 
+import torch
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), '..')))
 from detector.language_whisper import LanguageWhisperDetector
 from extractor.audio_ffmpeg import AudioFFmpegExtractor
@@ -21,6 +23,9 @@ class TestLanguageWhisperDetector(unittest.TestCase):
         self.detector = LanguageWhisperDetector(model_path=None, method="mel")
 
     def test_detect_language_returns_str(self):
+        gpu_count = torch.cuda.device_count()
+        self.assertGreaterEqual(gpu_count, 0, "No GPU available for testing.")
+        
         self.audio_extractor = AudioFFmpegExtractor()
 
         audio_path = os.path.join(self.TEST_ROOT, 'resources', 'Learn_OAI_Whisper_Sample_Audio01.m4a')
