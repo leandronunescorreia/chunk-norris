@@ -1,6 +1,6 @@
 import librosa
 import numpy as np
-from app.detector import Detector
+from app.ports.detector import Detector
 
 class SilenceLibrosaDetector(Detector):
 

@@ -1,7 +1,4 @@
-from detector import Detector
-from extractor import Extractor
 from common.numpy_audio import normalize_audio
-import json
 
 from detector.det_factory import create_new_language_detector, create_new_silence_detector, create_new_mute_detector
 from extractor.ext_factory import create_new_audio_extractor, create_new_info_extractor
@@ -13,7 +10,7 @@ SAMPLING_RATE=16000
 
 class NorrisSetup:
     def __init__(self, model_path=None, silence_threshold=0.5, silence_duration=0.5,
-                 info_extractor=None, audio_extractor=None, lang_detector=None, 
+                 info_extractor=None, audio_extractor=None, lang_detector=None,
                  silence_detector=None, mute_detector=None):
         self.model_path = model_path
         self.silence_threshold = silence_threshold
@@ -21,12 +18,12 @@ class NorrisSetup:
         
         self.info_extractor = create_new_info_extractor(info_extractor)
         self.audio_extractor = create_new_audio_extractor(audio_extractor)
-        self.lang_detector = create_new_language_detector(lang_detector)
+        self.lang_detector = create_new_language_detector(lang_detector, self.model_path, "mel")
         self.silence_detector = create_new_silence_detector(silence_detector)
         self.mute_detector = create_new_mute_detector(mute_detector)
 
 
-class ChunkNorris(Detector, Extractor):
+class ChunkNorris():
     def __init__(self, setup:NorrisSetup):    
         self.model_path = setup.model_path
         self.silence_threshold = setup.silence_threshold
@@ -47,11 +44,11 @@ class ChunkNorris(Detector, Extractor):
             raise ValueError("Invalid media info provided.")
 
         result_info = ResultInfo(
-            filename=media_info.filename,
-            duration=media_info.duration,
-            audio_tracks=None)
+            filename=media_info.get('filename', None),
+            duration=media_info.get('duration', None),
+            audio_tracks=[])
 
-        for track in media_info.tracks:
+        for track in media_info.get('audio_tracks', []):
             if track.track_type == "Audio":
                 raw_data_np = self.audio_extractor.extract(input_path, track.to_data().get('stream_identifier'), SAMPLING_RATE)
                 norm_flat_buffer = normalize_audio(raw_data_np)
@@ -59,7 +56,7 @@ class ChunkNorris(Detector, Extractor):
                 track = AudioTrack(
                     title=track.to_data().get('title'),
                     duration=track.to_data().get('duration'),
-                    language=track.to_data().get('language'),
+                    language=self.lang_detector.detect(norm_flat_buffer, self.silence_threshold),
                     channel_layout=track.to_data().get('channel_layout'),
                     silence_points=self.silence_detector.detect(norm_flat_buffer, self.silence_threshold, self.silence_duration),
                     is_muted=self.mute_detector.detect(norm_flat_buffer, self.silence_threshold)
@@ -70,10 +67,9 @@ class ChunkNorris(Detector, Extractor):
         result_info.audio_tracks = audio_tracks
         return result_info
 
-
-    def validate_mediainfo(self, media_info: ResultInfo):
-        if not media_info or not media_info.filename:
+    def validate_mediainfo(self, media_info):
+        if not media_info:
             raise ValueError("Invalid media info provided.")
-        if not media_info.audio_tracks:
+        if len(media_info) == 0:
             raise ValueError("No audio tracks found in the media info.")
         return True

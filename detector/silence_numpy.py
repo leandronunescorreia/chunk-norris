@@ -1,5 +1,5 @@
 import numpy as np
-from app.detector import Detector
+from app.ports.detector import Detector
 
 class SilenceNumpyDetector(Detector):
 
@@ -7,7 +7,7 @@ class SilenceNumpyDetector(Detector):
         self.threshold = threshold
 
 
-    def calculate_segment_duration_and_num_segments(duration_seconds, overlap_seconds, max_size, bitrate_kbps):
+    def calculate_segment_duration_and_num_segments(self, duration_seconds, overlap_seconds, max_size, bitrate_kbps):
         """Calculate the duration and number of segments for an audio file."""
         seconds_for_max_size = (max_size * 8 * 1024) / bitrate_kbps
         num_segments = max(2, int(duration_seconds / seconds_for_max_size) + 1)

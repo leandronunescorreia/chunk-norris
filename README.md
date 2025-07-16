@@ -79,3 +79,17 @@ python main.py --input example.mp4 --output output.json --silence-threshold 0.3 
 >It downmixed itself into mono out of respect.
 
 
+## How configure devcontainer?
+
+
+### first create the base image based on nvidia distro
+
+```bash
+docker build -t ubuntu22-cuda118-python310 -f .devcontainer/Dockerfile.base .
+```
+
+After create this base image, open Command Palette (`Ctrl+Shift+P`), select **"Dev Containers: Reopen in Container"**.
+
+VS Code will build the container using `.devcontainer/dev.Dockerfile` (see the "create the base image first" section below) and set up the environment automatically.
+
+You can customize the dev container by editing `.devcontainer/devcontainer.json` and related files.

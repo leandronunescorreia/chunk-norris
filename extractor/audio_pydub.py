@@ -1,6 +1,6 @@
 from pydub import AudioSegment
 import numpy as np
-from app.extractor import Extractor
+from app.ports.extractor import Extractor
 
 class AudioPydubExtractor(Extractor):
     

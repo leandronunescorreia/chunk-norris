@@ -1,7 +1,9 @@
-MODEL_PATH="C:\\Users\\%USERNAME%\\.cache\\whisper"
+MODEL_PATH=".cache\\whisper"
 SILENCE_THRESHOLD=-20
 SILENCE_DURATION=500
 INFO_EXTRACTOR=mediainfo
-AUDIO_EXTRACTOR=audio_ffmpeg
-LANG_DETECTOR=language_whisper
-SILENCE_DETECTOR=silence_librosa
+AUDIO_EXTRACTOR=ffmpeg
+LANG_DETECTOR=whisper
+SILENCE_DETECTOR=librosa
+MUTED_DETECTOR=librosa
+OUTPUT_FORMAT=json

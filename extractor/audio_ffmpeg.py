@@ -1,6 +1,6 @@
 import numpy as np
 from subprocess import CalledProcessError, run
-from app.extractor import Extractor
+from app.ports.extractor import Extractor
 
 class AudioFFmpegExtractor(Extractor):
 
@@ -41,19 +41,26 @@ class AudioFFmpegExtractor(Extractor):
             ]
 
     def get_default_command(self, file_name, audio_track, sampling):
-        return [
+        audio_map = None
+        if len(audio_track) > 1:
+            audio_map = f"0:a:{audio_track[0]}"
+
+        command = [
             "ffmpeg",
             "-nostdin",
             "-threads", "0",
             "-i", file_name,
-            "-map", f"0:a:{audio_track}",
+        ]
+        if audio_map:
+            command += ["-map", audio_map]
+        command += [
             "-f", "s16le",
             "-ac", "1",
             "-acodec", "pcm_s16le",
             "-ar", str(sampling),
             "-"
         ]
-    
+        return command
     def extract(self, file_name: str, audio_track: list[int], sampling: int = 16000, mixed:bool=False) -> np.ndarray:
         command = self.get_default_command(file_name, audio_track, sampling) if not mixed else self.get_command_for_mixed_channel(file_name, audio_track, sampling) 
 

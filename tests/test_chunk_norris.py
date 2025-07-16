@@ -1,35 +1,41 @@
 import unittest
 import sys
 import os
+from pathlib import Path
 from dotenv import load_dotenv, dotenv_values
+import platform
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
 from app.chunk_norris import NorrisSetup, ChunkNorris
 
 class TestChunkNorrisIntegration(unittest.TestCase):
-
+    TEST_ROOT = os.path.join(os.path.dirname(__file__))
+    HOME_PATH = Path.home()
+        
     def setUp(self):
-        load_dotenv()
-        conf_test_path = os.path.join(os.getcwd(), "tests", ".test_env")
+        conf_test_path = os.path.join(self.TEST_ROOT, ".test_env")
+        self.assertTrue(os.path.exists(conf_test_path))
         config = dotenv_values(conf_test_path)
         # Setup NorrisSetup with default arguments
         self.norris_setup = NorrisSetup(
-            model_path=None,
-            silence_threshold=0.5,
-            silence_duration=0.25,
-            info_extractor="mediainfo",
-            audio_extractor="ffmpeg",
-            lang_detector="whisper",
-            silence_detector="librosa",
-            mute_detector="numpy"
+            model_path=os.path.join(self.HOME_PATH, config.get("MODEL_PATH", None)),
+            silence_threshold=config.get("SILENCE_THRESHOLD", None),
+            silence_duration=config.get("SILENCE_DURATION", None),
+            info_extractor=config.get("INFO_EXTRACTOR", None),
+            audio_extractor=config.get("AUDIO_EXTRACTOR", None),
+            lang_detector=config.get("LANG_DETECTOR", None),
+            silence_detector=config.get("SILENCE_DETECTOR", None),
+            mute_detector=config.get("MUTED_DETECTOR", None)
         )
 
         self.chunk_norris = ChunkNorris(setup=self.norris_setup)
 
     def test_run_integration(self):
         # Use a real input file for integration testing
-        input_path = os.path.join("jupyter", "20241125-NOVA_EQUIPE_na_Frmula_1.mp4")
+        input_path = os.path.join(self.TEST_ROOT, "..", "jupyter", "20241125-NOVA_EQUIPE_na_Frmula_1.mp4")
         output_path = "test_output.json"
+
+        self.assertTrue(os.path.exists(input_path))
 
         # Run the method
         result = self.chunk_norris.run(input_path)
