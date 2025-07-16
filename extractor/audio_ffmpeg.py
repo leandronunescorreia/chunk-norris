@@ -70,5 +70,5 @@ class AudioFFmpegExtractor(Extractor):
             raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
 
         # audio_data = np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
-
-        return np.frombuffer(out, dtype=np.int16)
+        # return np.frombuffer(out, dtype=np.int16)
+        return out
