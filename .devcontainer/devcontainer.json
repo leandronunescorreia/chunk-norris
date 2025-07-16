@@ -16,12 +16,20 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "/usr/bin/python3.9"
+        "python.defaultInterpreterPath": "/usr/bin/python3.10",
+            "python.testing.pytestEnabled": true,
+            "python.testing.unittestEnabled": false,
+            "files.exclude": {
+                ".coverage": true,
+                ".pytest_cache": true,
+                "__pycache__": true
+            }
       },
       "extensions": [
         "ms-python.python",
         "ms-toolsai.jupyter",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter"
       ]
     }
   },
