@@ -4,3 +4,4 @@ pydub
 openai-whisper
 matplotlib
 python-dotenv
+tqdm
