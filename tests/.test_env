@@ -1,4 +1,4 @@
-MODEL_PATH=".cache\\whisper"
+MODEL_PATH=".cache/whisper"
 SILENCE_THRESHOLD=-20
 SILENCE_DURATION=500
 INFO_EXTRACTOR=mediainfo
