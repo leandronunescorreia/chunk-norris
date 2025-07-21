@@ -1,6 +1,11 @@
 # chunk-norris
 Chunk Norris – The Audio Track vigilante
 
+<p align="center">
+    <img src="chunk-norris.png" alt="Chunk Norris Logo" width="768"/>
+</p>
+
+
 > "Silence? That’s illegal in this town."
 
 Chunk Norris is an audio tool designed to analyze and process audio tracks accurately and efficiently. It is designed to identify silent tracks, and the primary language of non-silent tracks.
