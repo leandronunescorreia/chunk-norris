@@ -1,39 +1,58 @@
 {
-  "name": "Chunk Norris Dev (CUDA 11.8)",
+  "name": "${localWorkspaceFolderBasename}",
   "build": {
     "context": "..",
-    "dockerfile": "dev.Dockerfile",
+    "dockerfile": "Dockerfile",
     "args": {
       "NODE_VERSION": "none"
     }
   },
+  "containerEnv": {
+    "APP_ENV": "DEV"
+  },  
+  "mounts": [
+    "source=${localWorkspaceFolder}/.cache,target=${containerWorkspaceFolder}/.cache,type=bind",
+    "source=C:\\videos,target=/mnt/videos,type=bind,consistency=cached"
+],
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind,consistency=delegated",
   "workspaceFolder": "/workspaces",  
-  "runArgs": [
-    "--gpus=all"
-  ],
-  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir -r requirements-dev.txt",
+  "runArgs": ["--gpus=all", "--shm-size=1gb"],
+  "forwardPorts": [8888],  
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir -r requirements-dev.txt && nvidia-smi",
+
   "customizations": {
     "vscode": {
       "settings": {
         "python.defaultInterpreterPath": "/usr/bin/python3.10",
-            "python.testing.pytestEnabled": true,
-            "python.testing.unittestEnabled": false,
-            "files.exclude": {
-                ".coverage": true,
-                ".pytest_cache": true,
-                "__pycache__": true
-            }
+        "notebook.formatOnSave.enabled": true,
+        "notebook.codeActionsOnSave": {
+          "notebook.source.fixAll": "explicit",
+          "notebook.source.organizeImports": "explicit"
+        },
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          }
+        },
+        "python.testing.pytestArgs": ["src"],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "files.exclude": {
+            ".coverage": true,
+            ".pytest_cache": true,
+            "__pycache__": true
+        }
       },
       "extensions": [
         "ms-python.python",
         "ms-toolsai.jupyter",
         "ms-python.vscode-pylance",
-        "ms-python.black-formatter"
+        "ms-python.black-formatter",
+        "ms-toolsai.jupyter-keymap",
+        "ms-toolsai.jupyter-renderers"        
       ]
     }
-  },
-  "mounts": [
-    "source=${localWorkspaceFolder}/.cache,target=/root/.cache,type=bind"
-  ]
+  }
 }
